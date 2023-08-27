@@ -125,8 +125,9 @@ class MySQLHandler(Logger):
             self.log.error(traceback.format_exc())
         return results
 
-    def __create(self, sql_text) -> bool:
+    def create_table(self, sql_text) -> bool:
         """
+        创建数据表
         :create author: 93207
         :create time: 2023/8/27 17:04
         """

@@ -115,7 +115,7 @@ class SSH2Client():
             self._connect()
 
         if not self._channel_client:
-            self._channel_client = self._ssh_client.invoke_shell()
+            self._channel_client = self._ssh_client.invoke_shell(term='xterm', width=4096)
             time.sleep(2)
 
             out_put = self._channel_client.recv(1024).decode()
@@ -125,7 +125,14 @@ class SSH2Client():
         logger.info(f"执行命令：{cmd}")
         self._channel_client.send(cmd)
 
-        return self.__recv(self._channel_client, end_str, timeout)
+        result = self.__recv(self._channel_client, end_str, timeout)
+
+        begin_pos = result.find("\r\n")
+        end_pos = result.rfind("\r\n")
+
+        if begin_pos == end_pos:
+            return ''
+        return result[begin_pos + 2: end_pos]
 
 
 def main():
@@ -145,6 +152,8 @@ def main():
             logger.info(res1)
             logger.info(res2)
             logger.info(res3)
+            res4 = ssh.channel_command('ls')
+            logger.info(res4)
 
 
     except Exception as e:
